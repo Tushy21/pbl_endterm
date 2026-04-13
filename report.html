@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Credit Risk Prediction Report</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.light.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Credit Risk Prediction Report</h1>
+</header>
+<h1
+id="credit-risk-prediction-using-explainable-machine-learning">Credit
+Risk Prediction Using Explainable Machine Learning</h1>
+<p><strong>A University Project Report</strong></p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Credit risk assessment is a critical function for financial
+institutions to minimize potential defaults and manage financial
+portfolios effectively. Traditional credit scoring systems, although
+functional, often lack the nuanced predictive capabilities of modern
+machine learning techniques and can act as “black-box” systems, failing
+to provide transparency in their decision-making. This project presents
+a full-stack web application for credit risk prediction, integrating
+robust machine learning models with human-readable explainability.
+leveraging Logistic Regression, Random Forest, and XGBoost classifiers,
+the system predicts the probability of a loan default based on a subset
+of carefully selected applicant features. The backend is powered by
+FastAPI, ensuring high-performance API endpoints, while a responsive
+React frontend utilizing Vite and Recharts provides an interactive user
+interface. Furthermore, the application integrates SHAP (SHapley
+Additive exPlanations) to ensure the predictions are explainable and
+transparent, giving insights into individual feature contributions for
+every application.</p>
+<hr />
+<h2 id="introduction">1. Introduction</h2>
+<p>The financial services industry is increasingly adopting artificial
+intelligence and machine learning to improve the accuracy and efficiency
+of credit lending processes. The fundamental problem in lending is
+predicting whether a potential borrower is likely to default on their
+loan obligation. A highly accurate prediction model allows banks to
+adjust interest rates, deny high-risk applications, and manage capital
+reserves.</p>
+<p>However, as models become more complex (e.g., ensemble trees like
+Random Forest and XGBoost), they also become opaque. Regulatory
+requirements heavily mandate transparency when denying credit to
+applicants, making the integration of Explainable Artificial
+Intelligence (XAI) indispensable.</p>
+<h3 id="objectives">1.1 Objectives</h3>
+<p>The primary objectives of this project are: 1. To develop a robust
+machine learning pipeline capable of classifying credit risk
+applications into low, medium, and high-risk categories based on
+underlying probabilities. 2. To provide model interpretability via SHAP
+values, ensuring that domain experts and applicants can understand the
+driving factors behind a credit classification. 3. To deploy the trained
+model in an accessible, fast, and scalable full-stack web application
+structure (React + FastAPI).</p>
+<hr />
+<h2 id="dataset-and-feature-engineering">2. Dataset and Feature
+Engineering</h2>
+<p>A critical aspect of developing an accurate classification model is
+the quality and relevance of the data provided to the algorithm.</p>
+<h3 id="dataset-overview">2.1 Dataset Overview</h3>
+<p>The dataset contains large volumes of historical loan data (approx.
+1.6 GB), encapsulating a variety of borrower characteristics and the
+final loan outcome (default or fully paid). Given the high
+dimensionality of financial datasets, filtering down to the most
+influential predictors prevents the curse of dimensionality and allows
+the model to generalize better.</p>
+<h3 id="feature-selection">2.2 Feature Selection</h3>
+<p>Through rigorous exploratory data analysis, the following five
+prominent continuous features were selected as the primary independent
+variables: - <strong><code>loan_amnt</code></strong>: The total
+requested value of the loan. High loan amounts generally correlate with
+a higher baseline risk depending on the borrower’s income. -
+<strong><code>annual_inc</code></strong>: The self-reported annual
+income of the borrower. This acts as a stabilizer against the loan
+amount. - <strong><code>dti</code> (Debt-to-Income Ratio)</strong>: A
+crucial metric calculating the monthly debt payments divided by monthly
+gross income. Extremely high DTIs indicate borrowers stretched too thin
+financial-wise. - <strong><code>revol_bal</code></strong>: The total
+credit revolving balance (e.g., credit card debt). -
+<strong><code>total_acc</code></strong>: The total number of credit
+lines currently in the borrower’s file.</p>
+<h3 id="preprocessing-pipeline">2.3 Preprocessing Pipeline</h3>
+<p>To guarantee consistent transformations during training and inference
+time, a <code>scikit-learn</code> pipeline was established: -
+<strong>Handling Missing Values</strong>: Imputations are applied to
+prevent missing values from halting the pipeline, commonly utilizing
+median strategies for continuous variables to limit the impact of
+outliers. - <strong>Feature Scaling</strong>: Algorithms such as
+Logistic Regression and XGBoost are sensitive to feature scales.
+Standardization techniques (Z-score normalization) are seamlessly
+integrated into the automated preprocessing pipeline. -
+<strong>Serialization</strong>: The entire combined schema of
+preprocessors and estimators is exported via <code>joblib</code>
+(<code>pipeline.joblib</code>), assuring zero data leakage or offset
+distributions in the production environment.</p>
+<hr />
+<h2 id="machine-learning-methodology">3. Machine Learning
+Methodology</h2>
+<p>For robust credit risk evaluation, multiple state-of-the-art
+algorithms form the core model experimentation phase before the
+best-performing iteration is selected.</p>
+<h3 id="model-architectures">3.1 Model Architectures</h3>
+<ol type="1">
+<li><strong>Logistic Regression:</strong> Used as the baseline model. It
+applies the logistic sigmoid function to a linear combination of
+features to output a probability between 0 and 1. To account for the
+inherently imbalanced nature of default scenarios, class weights are
+kept perfectly balanced (<code>class_weight='balanced'</code>).</li>
+<li><strong>Random Forest Classifier:</strong> An ensemble learning
+method constructing a multitude of decision trees at training time. By
+bagging trees of different depth configurations
+(<code>max_depth=10</code>, <code>n_estimators=100</code>) it naturally
+suppresses overfitting tendencies and handles slightly non-linear
+relationships expertly.</li>
+<li><strong>XGBoost (Extreme Gradient Boosting):</strong> The strongest
+contender for this project, utilizing decision tree ensembles pushed
+through gradient descent frameworks. Specific hyperparameters
+(<code>learning_rate=0.1</code>, <code>max_depth=6</code>,
+<code>scale_pos_weight=3</code>) were chosen to specifically penalize
+false predictions toward the minority class (the defaulters).</li>
+</ol>
+<h3 id="explainable-ai-integration-shap">3.2 Explainable AI Integration
+(SHAP)</h3>
+<p>Predictive power alone is insufficient for modern credit assessment
+tools. SHAP (SHapley Additive exPlanations), derived from cooperative
+game theory, computes the marginal contribution of a specific feature
+value to the final prediction, relative to a foundational baseline.</p>
+<p>Our explicit integration dynamically matches the correct explainer
+(<code>TreeExplainer</code> or <code>LinearExplainer</code>) with the
+loaded model and pushes out individualized feature weight lists
+dynamically. The API provides this directly as an end-user consumable
+JSON payload.</p>
+<hr />
+<h2 id="system-architecture">4. System Architecture</h2>
+<p>The application translates complex backend Python mechanics into an
+accessible user interface through a tightly decoupled modern web
+stack.</p>
+<h3 id="backend-engine-fastapi">4.1 Backend Engine (FastAPI)</h3>
+<ul>
+<li><strong>Framework:</strong> FastAPI was elected over traditional
+counterparts like Flask or Django due to its asynchronous support
+out-of-the-box and extremely fast runtime driven by Starlette and
+Pydantic.</li>
+<li><strong>Endpoints:</strong>
+<ul>
+<li><code>GET /</code>: Health check route to verify Docker or local
+system uptime.</li>
+<li><code>POST /predict</code>: Handles incoming
+<code>LoanApplication</code> schema payloads, runs
+<code>transform</code> across the preprocessing engine, calls
+<code>model.predict_proba()</code>, and dynamically maps outputs to
+categorical risk brackets (High if <span
+class="math inline"> &gt; 0.15</span>, Medium if <span
+class="math inline"> &gt; 0.08</span>, else Low).</li>
+<li><code>POST /explain</code>: Executes the prediction mapping while
+additionally wrapping the payload inside the
+<code>get_explanation()</code> SHAP wrapper, sorting features by their
+absolute contributions in real-time.</li>
+</ul></li>
+</ul>
+<h3 id="frontend-engine-react-vite">4.2 Frontend Engine (React +
+Vite)</h3>
+<ul>
+<li><strong>Framework:</strong> The user-facing dashboard is constructed
+via React 19 natively compiled by Vite, providing instantaneous Hot
+Module Replacement (HMR).</li>
+<li><strong>Communication:</strong> Axios is utilized to orchestrate the
+RESTful API commands connecting with <code>localhost:8000</code>.</li>
+<li><strong>Data Visualization:</strong> Raw numbers generated by SHAP
+are abstract for average users. <code>Recharts</code> is employed to
+translate <code>FeatureContribution</code> arrays directly into
+intuitive, visually appealing horizontal bar charts, mapping exactly
+which feature drove the user’s risk rating towards rejection or
+approval.</li>
+</ul>
+<hr />
+<h2 id="model-evaluation-and-results">5. Model Evaluation and
+Results</h2>
+<p>Credit defaults are substantially rarer than successful repayments.
+Therefore, evaluating precision (proportion of true defaults correctly
+identified among all predicted defaults) and recall (proportion of
+actual defaults detected) via rigorous statistical measurements takes
+precedence over nominal accuracy.</p>
+<h3 id="evaluation-metrics">5.1 Evaluation Metrics</h3>
+<p>The framework evaluated Logistic Regression, Random Forest, and
+XGBoost using: - <strong>Precision, Recall, F1-Score</strong>:
+Particularly optimized for the minority positive class. -
+<strong>ROC-AUC (Receiver Operating Characteristic - Area Under
+Curve)</strong>: The ultimate arbiter for binary classifiers ranking
+prediction probabilities. The model displaying the highest structural
+AUC was preserved and explicitly serialized into
+<code>/artifacts/pipeline.joblib</code>.</p>
+<hr />
+<h2 id="challenges-and-discussion">6. Challenges and Discussion</h2>
+<p>Implementing the credit risk prediction utility posed several
+challenges: 1. <strong>Class Imbalance</strong>: Defaulted loans
+consistently represent a fraction of total datasets. Without parameter
+recalibration (<code>scale_pos_weight</code>, <code>balanced</code>
+classes), models inherently collapsed to single-class prediction
+behavior (always predicting ‘Low Risk’). 2. <strong>Computational
+Overhead with Explainability</strong>: Native SHAP tree integrations are
+fast, but running exact calculation values required matrix
+denormalization. The structural code in <code>explainer.py</code> was
+refined to differentiate tree calculations smoothly avoiding memory
+leakage or overhead spikes.</p>
+<hr />
+<h2 id="conclusion">7. Conclusion</h2>
+<p>This project successfully bridged the gap between highly structural
+statistical learning and intuitive UI/UX design. Through the careful
+pipeline assembly of preprocessing frameworks, advanced ensemble
+classifiers (XGBoost/Random Forest), and game-theory-driven
+explainability (SHAP), the proposed architecture demonstrates a capable
+and regulatory-compliant framework. Integrating this through a decoupled
+React-FastAPI interaction ensures it serves as an excellent foundational
+structure for scaled institutional deployment.</p>
+<hr />
+<h2 id="references">8. References</h2>
+<ol type="1">
+<li>FastAPI Framework Documentation. <em>Tiangolo</em>.
+https://fastapi.tiangolo.com/</li>
+<li>Lundberg, S. M., &amp; Lee, S. I. (2017). <em>A Unified Approach to
+Interpreting Model Predictions</em>. Advances in Neural Information
+Processing Systems (NIPS).</li>
+<li>Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in
+Python. <em>Journal of Machine Learning Research</em>.</li>
+<li>React Documentation. <em>Meta Open Source</em>.
+https://react.dev/</li>
+<li>Chen, T., &amp; Guestrin, C. (2016). <em>XGBoost: A Scalable Tree
+Boosting System</em>. Proceedings of the 22nd ACM SIGKDD International
+Conference.</li>
+</ol>
+</body>
+</html>

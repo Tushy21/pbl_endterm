@@ -1,0 +1,285 @@
+:root {
+  --bg-dark: #0f172a;
+  --bg-card: #1e293b;
+  --bg-input: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --border-color: #334155;
+  --accent-gold: #fbbf24;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* Layout */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-nav {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent-green);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--text-main);
+}
+
+.main-content {
+  flex: 1;
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Betting Layout */
+.betting-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Cards */
+.card {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.card-title {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.card-body {
+  padding: 24px;
+}
+
+/* Forms & Inputs */
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.bet-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bet-input-prefix {
+  position: absolute;
+  left: 16px;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.bet-input {
+  width: 100%;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 16px;
+  padding-left: 36px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-family: monospace;
+  font-weight: 600;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+
+.bet-input:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.bet-input::placeholder {
+  color: #64748b;
+}
+
+/* Remove number input spinners */
+.bet-input::-webkit-outer-spin-button,
+.bet-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.bet-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Buttons */
+.btn-place-bet {
+  width: 100%;
+  background-color: var(--accent-green);
+  color: #000;
+  border: none;
+  padding: 18px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-place-bet:hover:not(:disabled) {
+  background-color: #16a34a;
+}
+
+.btn-place-bet:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-place-bet:disabled {
+  background-color: var(--bg-input);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Bet Slip (Results) */
+.bet-slip {
+  position: sticky;
+  top: 32px;
+}
+
+.slip-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.slip-item:last-child {
+  border-bottom: none;
+}
+
+.slip-label {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.slip-value {
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.slip-value.danger {
+  color: var(--accent-red);
+}
+
+.slip-value.success {
+  color: var(--accent-green);
+}
+
+.slip-total {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slip-total-label {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-main);
+}
+
+.slip-total-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent-gold);
+  font-family: monospace;
+}
+
+.error-message {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: var(--accent-red);
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .betting-layout {
+    grid-template-columns: 1fr;
+  }
+}
