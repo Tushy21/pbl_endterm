@@ -6,11 +6,5 @@
     "backend": {
       "routePrefix": "/api"
     }
-  },
-  "functions": {
-    "backend/**/*.py": {
-      "maxDuration": 30,
-      "includeFiles": "backend/artifacts/**"
-    }
   }
 }
