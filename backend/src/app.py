@@ -20,7 +20,7 @@ app.add_middleware(
 def health():
     return {"status": "API Running"}
 
-@app.post("/predict", response_model=PredictionResponse)
+@app.post("/api/predict", response_model=PredictionResponse)
 def predict(data: LoanApplication):
 
     pipeline = get_model()  # This is a dict
@@ -49,7 +49,7 @@ def predict(data: LoanApplication):
         "risk_level": risk
     }
 
-@app.post("/explain", response_model=ExplanationResponse)
+@app.post("/api/explain", response_model=ExplanationResponse)
 def explain(data: LoanApplication):
     pipeline = get_model()
     input_df = pd.DataFrame([data.dict()])

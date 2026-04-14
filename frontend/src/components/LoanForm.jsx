@@ -38,8 +38,8 @@ function LoanForm() {
       };
 
       const [predictRes, explainRes] = await Promise.all([
-        axios.post("http://127.0.0.1:8000/predict", payload),
-        axios.post("http://127.0.0.1:8000/explain", payload),
+        axios.post("/api/predict", payload),
+        axios.post("/api/explain", payload),
       ]);
 
       setResult({
